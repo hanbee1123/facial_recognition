@@ -12,3 +12,4 @@ It works as follows:
 3. For a returning visitor, the system automatically send them an SMS message with an OTP.
 4. Given a valid OTP, a visitor should be able to input it and receive a personalized greeting.
 
+<img width="649" alt="Screen Shot 2020-11-06 at 6 10 10 PM" src="https://user-images.githubusercontent.com/46665763/98347877-5da2df80-205b-11eb-8a24-27d028929cb8.png">
