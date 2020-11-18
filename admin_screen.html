@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+   <!-- api gateway generated sdk -->
+   <script type="text/javascript" src="lib/axios/dist/axios.standalone.js"></script>
+   <script type="text/javascript" src="lib/CryptoJS/rollups/hmac-sha256.js"></script>
+   <script type="text/javascript" src="lib/CryptoJS/rollups/sha256.js"></script>
+   <script type="text/javascript" src="lib/CryptoJS/components/hmac.js"></script>
+   <script type="text/javascript" src="lib/CryptoJS/components/enc-base64.js"></script>
+   <script type="text/javascript" src="lib/url-template/url-template.js"></script>
+   <script type="text/javascript" src="lib/apiGatewayCore/sigV4Client.js"></script>
+   <script type="text/javascript" src="lib/apiGatewayCore/apiGatewayClient.js"></script>
+   <script type="text/javascript" src="lib/apiGatewayCore/simpleHttpClient.js"></script>
+   <script type="text/javascript" src="lib/apiGatewayCore/utils.js"></script>
+   <script type="text/javascript" src="apigClient.js"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <title>Admin_Screen</title>
+  </head>
+  <body>
+    <div class="container">  
+      <form id="contact" action="" method="post">
+        <h4 align="middle">To approve visitor, type name and number</h4>
+        <h3>       <h3>
+        <fieldset>
+          <input placeholder="Name" type="text" id="v_name" name="visitor_name" tabindex="1" style="text-align:center;" required autofocus>
+        </fieldset>
+        <fieldset>
+          <input placeholder="Phone Number" type="text" name="visitor_number" id="v_number" style="text-align:center;" tabindex="2" required>
+        </fieldset>
+        <fieldset>
+          <button name="submit" type="submit" id="contact-submit" data-submit="...Sending">Submit</button>
+        </fieldset>
+        <h3 id="answer" style="color: green;"></h3>
+      </form>
+    </div>
+  </body>
+
+  <script>
+    $(function () {
+      // apigClient = apigClientFactory.newClient();
+      $('#contact').on('submit', function (e) {
+          e.preventDefault();  //prevent form from submitting
+
+          {
+              let data = {};
+              data.name = $('#v_name').val();
+              data.phone = $('#v_number').val();
+              let json_data = JSON.stringify(data);
+              console.log(json_data);
+              var body = {
+                      "visitors": [
+                          {
+                              "type": "visitor",
+                              "unstructured": {
+                                  "name": data.name,
+                                  "phone": data.phone
+                              }
+                          }
+                      ]  
+                  };
+              console.log("ready to send")
+              $('#answer').html('sent successfully!').css("color", "green");
+              send_request(body)
+          }
+      });
+    });
+
+    function send_request(payload) {
+        $.ajax({
+            method: 'POST',
+            url: 'https://tayqf65t52.execute-api.us-east-1.amazonaws.com/dev/v_register',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify(payload),
+            success: function(result){
+                let message = 'Incorrect. Please try again.';
+                    if (result) {
+                        message = 'The user was added Successfully!';
+                    }
+                    $('#answer').html(message).css("color", "green");
+                    $('#contact-submit').prop('disabled', true);
+                    console.log(message);
+
+                $('#answer').html(message).css("color", "green");
+                $('#contact-submit').prop('disabled', true);
+            },
+            error: function (err) {
+                let message_obj = JSON.parse(err.responseText);
+                let message = message_obj.message.content;
+                $('#answer').html('Error:' + message).css("color", "red");
+                console.log(err);
+            }
+        });
+    }
+
+
+  </script>
+
+</html>
